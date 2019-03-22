@@ -24,9 +24,13 @@ app.get('/', (req, res) => res.json({ status: 'ok' }));
 app.get('/go', (req, res) => {
 	const msgArr = [stringFactory(), stringFactory(), ''];
 
-	const promiseArr = msgArr.map(e => User.create({ message: e }));
-
-	db.transaction(transaction => Promise.all(promiseArr, User.create({})))
+	db.transaction(transaction =>
+		Promise.all(
+			msgArr
+				.map(e => User.create({ message: e }, { transaction }))
+				.concat(User.create({}, { transaction }))
+		)
+	)
 		.then(e => res.json({ deu: 'bom' }))
 		.catch(err => res.json({ deu: 'ruim' }));
 });
