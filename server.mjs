@@ -21,10 +21,10 @@ db.sync();
 
 app.get('/', (req, res) => res.json({ status: 'ok' }));
 
-app.get('/go', async (req, res) => {
+app.get('/go', (req, res) => {
 	const msgArr = [stringFactory(), stringFactory(), ''];
 
-	const promiseArr = await msgArr.map(e => User.create({ message: e }));
+	const promiseArr = msgArr.map(e => User.create({ message: e }));
 
 	db.transaction(transaction => Promise.all(promiseArr, User.create({})))
 		.then(e => res.json({ deu: 'bom' }))
